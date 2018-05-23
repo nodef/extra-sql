@@ -1,6 +1,6 @@
 {
   "name": "sql-extra",
-  "version": "0.0.7",
+  "version": "0.1.0",
   "description": "Extra methods for generating SQL commands.",
   "main": "index.js",
   "scripts": {
