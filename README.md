@@ -1,5 +1,7 @@
 # sql-extra
 
+[![sql-extra](https://i.imgur.com/P0RiIVB.jpg)](https://npmjs.com/package/sql-extra/)
+
 Extra methods for generating SQL commands.
 
 ```javascript
