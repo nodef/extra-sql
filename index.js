@@ -1,6 +1,6 @@
 // 0. @sql-extra/createindex (createIndex)
 function createIndex(nam, tab, exp, opt={}) {
-  var z = `CREATE INDEX IF NOT EXISTS ${nam} ON "${tab}" `;
+  var z = `CREATE INDEX IF NOT EXISTS "${nam}" ON "${tab}" `;
   if(opt.method) z += `USING ${opt.method} `;
   return z+`(${exp});\n`;
 };
@@ -14,7 +14,7 @@ function createTable(nam, cols, opt={}) {
 };
 // 2. @sql-extra/createview (createView)
 function createView(nam, qry) {
-  return `CREATE OR REPLACE VIEW ${nam} AS ${qry};\n`;
+  return `CREATE OR REPLACE VIEW "${nam}" AS ${qry};\n`;
 };
 // 3. @sql-extra/insertinto (insertInto)
 function insertInto(tab, vals, opt={}) {
@@ -51,11 +51,7 @@ function setupTable(nam, cols, vals=null, opt={}) {
   }
   return z;
 };
-// 5. @sql-extra/tableexists (tableExists)
-function tableExists(nam) {
-  return `SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name='${nam}');\n`;
-};
-// 6. @sql-extra/tsvector (tsvector)
+// 5. @sql-extra/tsvector (tsvector)
 function tsvector(cols) {
   var z = '';
   for(var k in cols)
@@ -67,5 +63,5 @@ exports.createTable = createTable;
 exports.createView = createView;
 exports.insertInto = insertInto;
 exports.setupTable = setupTable;
-exports.tableExists = tableExists;
+exports.undefined = undefined;
 exports.tsvector = tsvector;
