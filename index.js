@@ -18,11 +18,13 @@ function createView(nam, qry) {
 };
 // 3. @sql-extra/insertinto (insertInto)
 function insertInto(tab, vals, opt={}) {
-  var z = `INSERT INTO "${tab}" (`;
-  for(var k in vals[0])
-    z += `"${k}", `;
-  z = z.replace(/, $/, '')+') VALUES\n(';
+  var i = -1, z = `INSERT INTO "${tab}" (`;
   for(var val of vals) {
+    if(++i===0) {
+      for(var k in val)
+        z += `"${k}", `;
+      z = z.replace(/, $/, '')+') VALUES\n(';
+    }
     for(var k in val)
       z += `'${val[k]}', `;
     z = z.replace(/, $/, '')+'),\n(';
