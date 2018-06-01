@@ -34,15 +34,22 @@ function insertInto(tab, vals, opt={}) {
   return z+';\n';
 };
 // 4. @sql-extra/setuptable (setupTable)
+const COMMAND_DEFAULT4 = 'create table, create index, create view, insert into';
+const CREATE_TABLE4 = /create\s*table/i;
+const CREATE_INDEX4 = /create\s*index/i;
+const CREATE_VIEW4 = /create\s*view/i;
+const INSERT_INTO4 = /insert\s*into/i;
+
 function setupTable(nam, cols, vals=null, opt={}) {
-  var z = createTable(nam, cols, opt);
-  if(vals) z += insertInto(nam, vals, opt);
+  var cmd = opt.command||COMMAND_DEFAULT4;
+  var z = CREATE_TABLE4.test(cmd)? createTable(nam, cols, opt):'';
+  if(vals && INSERT_INTO4.test(cmd)) z += insertInto(nam, vals, opt);
   if(opt.tsvector) {
     var tv = tsvector(opt.tsvector);
-    z += createView(nam+'_tsvector', `SELECT *, ${tv} AS "tsvector" FROM "${nam}"`);
-    if(opt.index) z += createIndex(nam+'_tsvector_idx', nam, `(${tv})`, {method: 'GIN'});
+    if(CREATE_VIEW4.test(cmd)) z += createView(nam+'_tsvector', `SELECT *, ${tv} AS "tsvector" FROM "${nam}"`);
+    if(opt.index && CREATE_INDEX4.test(cmd)) z += createIndex(nam+'_tsvector_idx', nam, `(${tv})`, {method: 'GIN'});
   }
-  if(opt.index) {
+  if(opt.index && CREATE_INDEX4.test(cmd)) {
     for(var k in cols) {
       if(cols[k]==null || cols[k]===opt.pk) continue;
       var knam = k.replace(/\W+/g, '_').toLowerCase();
@@ -51,7 +58,11 @@ function setupTable(nam, cols, vals=null, opt={}) {
   }
   return z;
 };
-// 5. @sql-extra/tsvector (tsvector)
+// 5. @sql-extra/tableexists (tableExists)
+function tableExists(nam) {
+  return `SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name='${nam}');\n`;
+};
+// 6. @sql-extra/tsvector (tsvector)
 function tsvector(cols) {
   var z = '';
   for(var k in cols)
@@ -63,5 +74,5 @@ exports.createTable = createTable;
 exports.createView = createView;
 exports.insertInto = insertInto;
 exports.setupTable = setupTable;
-exports.undefined = undefined;
+exports.tableExists = tableExists;
 exports.tsvector = tsvector;
