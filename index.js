@@ -17,47 +17,62 @@ function createView(nam, qry) {
   return `CREATE OR REPLACE VIEW "${nam}" AS ${qry};\n`;
 };
 // 3. @sql-extra/insertinto (insertInto)
+function addRow3(val, z='', i=0) {
+  if(i===0) {
+    for(var k in val)
+      z += `"${k}", `;
+    z = z.endsWith(', ')? z.substring(0, z.length-2):z;
+    z += ') VALUES\n(';
+  }
+  for(var k in val)
+    z += `'${val[k]}', `;
+  z = z.endsWith(', ')? z.substring(0, z.length-2):z;
+  z += '),\n(';
+  return z;
+};
+function stream3(tab, strm, opt={}) {
+  var i = -1, z = `INSERT INTO "${tab}" (`;
+  return new Promise((fres, frej) => {
+    strm.on('error', frej);
+    strm.on('data', (val) => z=addRow3(val, z, ++i));
+    strm.on('end', () => {
+      z = z.replace(/\),\n\($/, '')+')';
+      if(opt.pk) z += `\nON CONFLICT ("${opt.pk}") DO NOTHING`;
+      fres(z+';\n');
+    });
+  });
+};
 function insertInto(tab, vals, opt={}) {
   var i = -1, z = `INSERT INTO "${tab}" (`;
-  for(var val of vals) {
-    if(++i===0) {
-      for(var k in val)
-        z += `"${k}", `;
-      z = z.replace(/, $/, '')+') VALUES\n(';
-    }
-    for(var k in val)
-      z += `'${val[k]}', `;
-    z = z.replace(/, $/, '')+'),\n(';
-  }
+  for(var val of vals)
+    z = addRow3(val, z, ++i);
   z = z.replace(/\),\n\($/, '')+')';
   if(opt.pk) z += `\nON CONFLICT ("${opt.pk}") DO NOTHING`;
   return z+';\n';
 };
+insertInto.stream = stream3;
 // 4. @sql-extra/setuptable (setupTable)
-const COMMAND_DEFAULT4 = 'create table, create index, create view, insert into';
-const CREATE_TABLE4 = /create\s*table/i;
-const CREATE_INDEX4 = /create\s*index/i;
-const CREATE_VIEW4 = /create\s*view/i;
-const INSERT_INTO4 = /insert\s*into/i;
-
-function setupTable(nam, cols, vals=null, opt={}) {
-  var cmd = opt.command||COMMAND_DEFAULT4;
-  var z = CREATE_TABLE4.test(cmd)? createTable(nam, cols, opt):'';
-  if(vals && INSERT_INTO4.test(cmd)) z += insertInto(nam, vals, opt);
+function index4(nam, cols, opt={}, z='') {
   if(opt.tsvector) {
     var tv = tsvector(opt.tsvector);
-    if(CREATE_VIEW4.test(cmd)) z += createView(nam+'_tsvector', `SELECT *, ${tv} AS "tsvector" FROM "${nam}"`);
-    if(opt.index && CREATE_INDEX4.test(cmd)) z += createIndex(nam+'_tsvector_idx', nam, `(${tv})`, {method: 'GIN'});
+    z += createView(nam+'_tsvector', `SELECT *, ${tv} AS "tsvector" FROM "${nam}"`);
+    if(opt.index) z += createIndex(nam+'_tsvector_idx', nam, `(${tv})`, {method: 'GIN'});
   }
-  if(opt.index && CREATE_INDEX4.test(cmd)) {
+  if(opt.index) {
     for(var k in cols) {
-      if(cols[k]==null || cols[k]===opt.pk) continue;
+      if(cols[k]==null || k===opt.pk) continue;
       var knam = k.replace(/\W+/g, '_').toLowerCase();
       z += createIndex(`${nam}_${knam}_idx`, nam, `"${k}"`);
     }
   }
   return z;
 };
+function setupTable(nam, cols, vals=null, opt={}, z='') {
+  z += createTable(nam, cols, opt);
+  if(vals) z += insertInto(nam, vals, opt);
+  return index4(nam, cols, opt, z);
+};
+setupTable.index = index4;
 // 5. @sql-extra/tableexists (tableExists)
 function tableExists(nam) {
   return `SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name='${nam}');\n`;
