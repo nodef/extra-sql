@@ -1,20 +1,21 @@
 // 0. @sql-extra/createindex (createIndex)
-function createIndex(nam, tab, exp, opt={}) {
-  var z = `CREATE INDEX IF NOT EXISTS "${nam}" ON "${tab}" `;
+function createIndex(nam, tab, exp, opt={}, z='') {
+  z += `CREATE INDEX IF NOT EXISTS "${nam}" ON "${tab}" `;
   if(opt.method) z += `USING ${opt.method} `;
   return z+`(${exp});\n`;
 };
 // 1. @sql-extra/createtable (createTable)
-function createTable(nam, cols, opt={}) {
-  var z = `CREATE TABLE IF NOT EXISTS "${nam}" (`;
+function createTable(nam, cols, opt={}, z='') {
+  z += `CREATE TABLE IF NOT EXISTS "${nam}" (`;
   for(var k in cols)
     z += `"${k}" ${cols[k]}, `;
   if(opt.pk) z += `PRIMARY KEY("${opt.pk}"), `;
   return z.replace(/, $/, '')+`);\n`;
 };
 // 2. @sql-extra/createview (createView)
-function createView(nam, qry) {
-  return `CREATE OR REPLACE VIEW "${nam}" AS ${qry};\n`;
+function createView(nam, qry, opt=null, z='') {
+  z += `CREATE OR REPLACE VIEW "${nam}" AS ${qry};\n`;
+  return z;
 };
 // 3. @sql-extra/insertinto (insertInto)
 function addRow3(val, z='', i=0) {
@@ -30,8 +31,9 @@ function addRow3(val, z='', i=0) {
   z += '),\n(';
   return z;
 };
-function stream3(tab, strm, opt={}) {
-  var i = -1, z = `INSERT INTO "${tab}" (`;
+function stream3(tab, strm, opt={}, z='') {
+  var i = -1;
+  z += `INSERT INTO "${tab}" (`;
   return new Promise((fres, frej) => {
     strm.on('error', frej);
     strm.on('data', (val) => z=addRow3(val, z, ++i));
@@ -42,8 +44,9 @@ function stream3(tab, strm, opt={}) {
     });
   });
 };
-function insertInto(tab, vals, opt={}) {
-  var i = -1, z = `INSERT INTO "${tab}" (`;
+function insertInto(tab, vals, opt={}, z='') {
+  var i = -1;
+  z += `INSERT INTO "${tab}" (`;
   for(var val of vals)
     z = addRow3(val, z, ++i);
   z = z.replace(/\),\n\($/, '')+')';
