@@ -1,6 +1,6 @@
 {
   "name": "sql-extra",
-  "version": "0.1.6",
+  "version": "0.1.7",
   "description": "Extra methods for generating SQL commands.",
   "main": "index.js",
   "scripts": {
@@ -25,6 +25,8 @@
     "@sql-extra/createtable": "^0.1.4",
     "@sql-extra/createview": "^0.1.4",
     "@sql-extra/insertinto": "^0.1.5",
+    "@sql-extra/matchtsquery": "^0.1.1",
+    "@sql-extra/selecttsquery": "^0.1.1",
     "@sql-extra/setuptable": "^0.1.7",
     "@sql-extra/tableexists": "^0.1.1",
     "@sql-extra/tsvector": "^0.1.1"

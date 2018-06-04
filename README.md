@@ -18,3 +18,5 @@ Methods:
 - [insertInto](https://www.npmjs.com/package/@sql-extra/insertinto)
 - [setupTable](https://www.npmjs.com/package/@sql-extra/setuptable)
 - [tableExists](https://www.npmjs.com/package/@sql-extra/tableexists)
+- [selectTsquery](https://www.npmjs.com/package/@sql-extra/selecttsquery)
+- [matchTsquery](https://www.npmjs.com/package/@sql-extra/matchtsquery)

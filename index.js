@@ -54,8 +54,32 @@ function insertInto(tab, vals, opt={}, z='') {
   return z+';\n';
 };
 insertInto.stream = stream3;
-// 4. @sql-extra/setuptable (setupTable)
-function index4(nam, cols, opt={}, z='') {
+// 4. @sql-extra/matchtsquery (matchTsquery)
+function matchTsquery(tab, wrds, tsv='"tsvector"', opt={}) {
+  var col = opt.columns||'*', nrm = opt.normalization||0;
+  for(var i=wrds.length, z=''; i>0; i--) {
+    var qry = wrds.slice(0, i).join(' ').replace(/([\'\"])/g, '$1$1');
+    z += `SELECT ${col}, '${i}'::INT AS "matchTsquery" FROM "${tab}"`;
+    z += ` WHERE ${tsv} @@ plainto_tsquery('${qry}')`;
+    if(opt.order) z += ` ORDER BY ts_rank(${tsv}, plainto_tsquery('${qry}'), ${nrm}) DESC`;
+    z += ' UNION ALL\n';
+  }
+  z = z.substring(0, z.length-11);
+  if(opt.limit) z += ` LIMIT ${opt.limit}`;
+  z += ';\n';
+  return z;
+};
+// 5. @sql-extra/selecttsquery (selectTsquery)
+function selectTsquery(tab, qry, tsv='"tsvector"', opt={}) {
+  var col = opt.columns||'*', nrm = opt.normalization||0;
+  var z = `SELECT ${col} FROM "${tab}" WHERE ${tsv} @@ plainto_tsquery('${qry}')`;
+  if(opt.order) z += ` ORDER BY ts_rank(${tsv}, plainto_tsquery('${qry}'), ${nrm}) DESC`;
+  if(opt.limit) z += ` LIMIT ${opt.limit}`;
+  z += `;\n`;
+  return z;
+};
+// 6. @sql-extra/setuptable (setupTable)
+function index6(nam, cols, opt={}, z='') {
   if(opt.tsvector) {
     var tv = tsvector(opt.tsvector);
     z += createView(nam+'_tsvector', `SELECT *, ${tv} AS "tsvector" FROM "${nam}"`);
@@ -73,14 +97,14 @@ function index4(nam, cols, opt={}, z='') {
 function setupTable(nam, cols, vals=null, opt={}, z='') {
   z += createTable(nam, cols, opt);
   if(vals) z += insertInto(nam, vals, opt);
-  return index4(nam, cols, opt, z);
+  return index6(nam, cols, opt, z);
 };
-setupTable.index = index4;
-// 5. @sql-extra/tableexists (tableExists)
+setupTable.index = index6;
+// 7. @sql-extra/tableexists (tableExists)
 function tableExists(nam) {
   return `SELECT EXISTS (SELECT 1 FROM information_schema.tables WHERE table_name='${nam}');\n`;
 };
-// 6. @sql-extra/tsvector (tsvector)
+// 8. @sql-extra/tsvector (tsvector)
 function tsvector(cols) {
   var z = '';
   for(var k in cols)
@@ -91,6 +115,8 @@ exports.createIndex = createIndex;
 exports.createTable = createTable;
 exports.createView = createView;
 exports.insertInto = insertInto;
+exports.matchTsquery = matchTsquery;
+exports.selectTsquery = selectTsquery;
 exports.setupTable = setupTable;
 exports.tableExists = tableExists;
 exports.tsvector = tsvector;
