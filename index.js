@@ -26,7 +26,7 @@ function addRow3(val, z='', i=0) {
     z += ') VALUES\n(';
   }
   for(var k in val)
-    z += `'${val[k]}', `;
+    z += val[k]==null? 'NULL, ':`'${val[k]}', `;
   z = z.endsWith(', ')? z.substring(0, z.length-2):z;
   z += '),\n(';
   return z;
@@ -95,8 +95,8 @@ function index6(nam, cols, opt={}, z='') {
   return z;
 };
 function setupTable(nam, cols, vals=null, opt={}, z='') {
-  z += createTable(nam, cols, opt);
-  if(vals) z += insertInto(nam, vals, opt);
+  z = createTable(nam, cols, opt, z);
+  if(vals) z = insertInto(nam, vals, opt, z);
   return index6(nam, cols, opt, z);
 };
 setupTable.index = index6;
