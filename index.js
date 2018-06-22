@@ -26,7 +26,7 @@ function addRow3(val, z='', i=0) {
     z += ') VALUES\n(';
   }
   for(var k in val)
-    z += val[k]==null? 'NULL, ':`'${val[k].toString().replace(/[\'\"]/g, '$&$&$&$&')}', `;
+    z += val[k]==null? 'NULL, ':`'$$${val[k]}$$', `;
   z = z.endsWith(', ')? z.substring(0, z.length-2):z;
   z += '),\n(';
   return z;
