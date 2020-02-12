@@ -35,6 +35,7 @@ sql.matchTsquery('columns', ['total', 'fat']);
 | [selectTsquery]     | Generates SQL command for SELECT with tsquery.
 | [matchTsquery]      | Generates SQL query for matching words with tsquery.
 | [OPERATORS]         | Set of operators in SQL. {field}
+| [OPERAND_COUNT]     | Number of operands used with an SQL operator. {field}
 
 <br>
 <br>
@@ -49,4 +50,6 @@ sql.matchTsquery('columns', ['total', 'fat']);
 [tableExists]: https://github.com/nodef/extra-sql/wiki/tableExists
 [selectTsquery]: https://github.com/nodef/extra-sql/wiki/selectTsquery
 [matchTsquery]: https://github.com/nodef/extra-sql/wiki/matchTsquery
+[OPERATORS]: https://github.com/nodef/extra-sql/wiki/OPERATORS
+[OPERAND_COUNT]: https://github.com/nodef/extra-sql/wiki/OPERAND_COUNT
 [SQL]: https://en.wikipedia.org/wiki/SQL

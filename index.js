@@ -14,6 +14,22 @@ const OPERATORS = new Set([
 	'ALL', 'AND', 'ANY', 'BETWEEN', 'EXISTS', 'IN', 'IN', 'LIKE', 'NOT', 'OR', 'SOME'
 ]);
 
+/**
+ * Number of operands used with an SQL operator.
+ */
+const OPERAND_COUNT = new Map([
+  // arithmetic operators
+  ['+', 2], ['-', 2], ['*', 2], ['/', 2], ['%', 2],
+  // bitwise operators
+  ['&', 2], ['|', 2], ['^', 2],
+  // comparision operators
+  ['=', 2], ['>', 2], ['<', 2], ['>=', 2], ['<=', 2], ['<>', 2],
+  // compound operators
+  ['+=', 2], ['-=', 2], ['*=', 2], ['/=', 2], ['%=', 2], ['&=', 2], ['^=', 2], ['|=', 2],
+  // logical operators
+  ['ALL', 2], ['AND', 2], ['ANY', 2], ['BETWEEN', 3], ['EXISTS', 1], ['IN', 2], ['LIKE', 2], ['NOT', 1], ['OR', 2], ['SOME', 2]
+]);
+
 
 /**
  * Generates SQL command for CREATE TABLE.
@@ -220,6 +236,7 @@ function matchTsquery(tab, wrds, tsv='"tsvector"', opt={}) {
   return z;
 }
 exports.OPERATORS = OPERATORS;
+exports.OPERAND_COUNT = OPERAND_COUNT;
 exports.createTable = createTable;
 exports.createIndex = createIndex;
 exports.createView = createView;
