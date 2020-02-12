@@ -34,6 +34,7 @@ sql.matchTsquery('columns', ['total', 'fat']);
 | [tableExists]       | Generates SQL command for table exists check.
 | [selectTsquery]     | Generates SQL command for SELECT with tsquery.
 | [matchTsquery]      | Generates SQL query for matching words with tsquery.
+| [OPERATORS]         | Set of operators in SQL. {field}
 
 <br>
 <br>

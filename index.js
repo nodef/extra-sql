@@ -1,4 +1,21 @@
 /**
+ * Set of operators in SQL.
+ */
+const OPERATORS = new Set([
+	// arithmetic operators
+	'+', '-', '*', '/', '%',
+	// bitwise operators
+	'&', '|', '^',
+	// comparision operators
+	'=', '>', '<', '>=', '<=', '<>',
+	// compound operators
+	'+=', '-=', '*=', '/=', '%=', '&=', '^=', '|=',
+	// logical operators
+	'ALL', 'AND', 'ANY', 'BETWEEN', 'EXISTS', 'IN', 'IN', 'LIKE', 'NOT', 'OR', 'SOME'
+]);
+
+
+/**
  * Generates SQL command for CREATE TABLE.
  * @param {string} nam table name
  * @param {object} cols columns {name: type}
@@ -202,6 +219,7 @@ function matchTsquery(tab, wrds, tsv='"tsvector"', opt={}) {
   z += ';\n';
   return z;
 }
+exports.OPERATORS = OPERATORS;
 exports.createTable = createTable;
 exports.createIndex = createIndex;
 exports.createView = createView;
