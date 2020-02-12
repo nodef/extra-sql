@@ -240,6 +240,52 @@ function matchTsquery(tab, wrds, tsv='"tsvector"', opt={}) {
   z += ';\n';
   return z;
 }
+
+function _format(obj, fmt, sep, i, val) {
+  var a = [], ve = val instanceof Array;
+  var i = i||(ve? val.length : 0);
+  for(var k in obj) {
+    var v = obj[k];
+    a.push(fmt.replace(/%k/g, k).replace(/%v/g, v).replace(/%i/g, i++));
+    if(ve) val.push(v);
+  }
+  return a.join(sep);
+}
+
+function _array(x) {
+  if(x instanceof Array) return x;
+  if(x==null || typeof x==='string' || typeof x[Symbol.iterator]!=='function') return [x];
+  return Array.from(x);
+}
+
+function createTableData(tab, col, key) {
+  return {'query':
+    `CREATE TABLE IF NOT EXISTS "${tab}" (`+
+    `${_format(col, '"%k" %v')}`+
+    (key? `,PRIMARY KEY(${_format(_array(key), '"%v"')})` : ``)+`);`
+  };
+}
+
+function updateData(tab, set, whr, op, sep) {
+  var par = [], set = _format(set||{}, '"%k" = $%i', `, `, 1, par);
+  var exp = _format(whr||{}, `"%k" ${op||'='} $%i`, ` ${sep||'AND'} `, par.length+1, par);
+  return {'query': `UPDATE "${tab}" SET ${set}${exp? ' WHERE '+exp : ''};`, 'data': par};
+}
+
+function selectData(tab, whr, op, sep) {
+  var par = [], exp = _format(whr||{}, `"%k" ${op||'='} $%i`, ` ${sep||'AND'} `, 1, par);
+  return {'query': `SELECT * FROM "${tab}"${exp? ' WHERE '+exp : ''};`, 'data': par};
+}
+
+function insertIntoData(tab, vals) {
+  var par = [], into = _format(vals||{}, '"%k"', `, `, 1, par), vals = _format(par, '$%i', ', ', 1);
+  return {'query': `INSERT INTO "${tab}" (${into}) VALUES (${vals});`, 'data': par};
+}
+
+function deleteData(tab, whr, op, sep) {
+  var par = [], exp = _format(whr||{}, `"%k" ${op||'='} $%i`, ` ${sep||'AND'} `, 1, par);
+  return {'query': `DELETE FROM "${tab}"${exp? ' WHERE '+exp : ''};`, 'data': par};
+}
 exports.OPERATORS = OPERATORS;
 exports.OPERAND_COUNT = OPERAND_COUNT;
 exports.createTable = createTable;
