@@ -1,7 +1,7 @@
 {
   "name": "extra-sql",
-  "version": "1.0.0",
-  "description": "Extra methods for generating SQL commands.",
+  "version": "1.0.1",
+  "description": "SQL is designed for managing or stream processing data in an RDBMS.",
   "main": "index.js",
   "scripts": {
     "test": "exit"
@@ -12,7 +12,18 @@
   },
   "keywords": [
     "extra",
-    "sql"
+    "sql",
+    "create",
+    "table",
+    "index",
+    "view",
+    "insert",
+    "into",
+    "setup",
+    "exists",
+    "select",
+    "match",
+    "tsquery"
   ],
   "author": "wolfram77@gmail.com",
   "license": "MIT",

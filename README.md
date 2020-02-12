@@ -1,8 +1,4 @@
-# sql-extra
-
-[![sql-extra](https://i.imgur.com/P0RiIVB.jpg)](https://npmjs.com/package/sql-extra/)
-
-Extra methods for generating SQL commands.
+SQL is designed for managing or stream processing data in an RDBMS.
 
 ```javascript
 const extra = require('sql-extra');
