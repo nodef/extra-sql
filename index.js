@@ -22,9 +22,9 @@ function createTable(nam, cols, opt={}, z='') {
  * @param {string} tab table name
  * @param {string} exp index expression
  * @param {object} opt options {method}
- * @param {string} opt.method index method (btree)
+ * @param {string} opt.method index method (null => btree)
  * @param {string} z please dont use
- * @returns {string} SQL query
+ * @returns {string} SQL command
  */
 function createIndex(nam, tab, exp, opt={}, z='') {
   z += `CREATE INDEX IF NOT EXISTS "${nam}" ON "${tab}" `;
@@ -64,7 +64,7 @@ function addRow(val, z='', i=0) {
 /**
  * Generates SQL command for INSERT INTO.
  * @param {string} tab table name
- * @param {Stream<object>} strm a readable stream with row objects {column: value}
+ * @param {Stream<object>} strm readable stream with row objects {column: value}
  * @param {object} opt options {pk}
  * @param {string} opt.pk primary key, on conflict (null => none)
  * @param {string} z please dont use
