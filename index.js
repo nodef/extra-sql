@@ -31,6 +31,11 @@ const OPERAND_COUNT = new Map([
 ]);
 
 
+function fromLinuxWildcard(txt) {
+  return txt? txt.replace(/\*/g, '%').replace(/\?/g, '_') : txt;
+}
+
+
 /**
  * Generates SQL command for CREATE TABLE.
  * @param {string} nam table name
