@@ -1,14 +1,25 @@
 {
   "name": "extra-sql",
-  "version": "1.0.7",
+  "version": "1.1.0",
   "description": "SQL is designed for managing or stream processing data in an RDBMS.",
   "main": "index.js",
-  "scripts": {
-    "test": "exit"
+  "module": "index.mjs",
+  "sideEffects": false,
+  "exports": {
+    "require": {
+      "default": "./index.js",
+      "types": "./index.d.ts"
+    },
+    "import": {
+      "default": "./index.mjs",
+      "types": "./index.d.ts"
+    }
   },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/nodef/extra-sql.git"
+  "scripts": {
+    "test": "jest",
+    "build": "node build.js",
+    "publish-docs": "node build.js publish-docs",
+    "publish-packages": "node build.js publish-packages"
   },
   "keywords": [
     "extra",
@@ -27,8 +38,23 @@
   ],
   "author": "wolfram77@gmail.com",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nodef/extra-sql.git"
+  },
   "bugs": {
     "url": "https://github.com/nodef/extra-sql/issues"
   },
-  "homepage": "https://github.com/nodef/extra-sql#readme"
+  "homepage": "https://github.com/nodef/extra-sql#readme",
+  "devDependencies": {
+    "@rollup/plugin-commonjs": "^28.0.3",
+    "@rollup/plugin-node-resolve": "^16.0.1",
+    "@types/jest": "^29.5.14",
+    "@types/node": "^22.14.0",
+    "extra-build": "^2.3.0",
+    "jest": "^29.7.0",
+    "rollup-plugin-cleanup": "^3.2.1",
+    "rollup-plugin-dts": "^6.2.1",
+    "ts-jest": "^29.3.1"
+  }
 }
