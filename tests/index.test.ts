@@ -157,16 +157,16 @@ describe('setupTableIndex', () => {
 
   test('generates SQL for tsvector index', () => {
     const sql = setupTableIndex('articles', {title: 'TEXT', content: 'TEXT'}, {
-      tsvector: {title: 1, content: 2},
+      tsvector: {title: 'A', content: 'B'},
       index: true,
     });
     expect(sql).toBe(
       'CREATE OR REPLACE VIEW "articles_tsvector" AS SELECT *, ' +
-      'setweight(to_tsvector(\'english\', "title"), \'1\')||' +
-      'setweight(to_tsvector(\'english\', "content"), \'2\') AS "tsvector" FROM "articles";\n' +
+      'setweight(to_tsvector(\'english\', "title"), \'A\')||' +
+      'setweight(to_tsvector(\'english\', "content"), \'B\') AS "tsvector" FROM "articles";\n' +
       'CREATE INDEX IF NOT EXISTS "articles_tsvector_idx" ON "articles" USING GIN ((' +
-      'setweight(to_tsvector(\'english\', "title"), \'1\')||' +
-      'setweight(to_tsvector(\'english\', "content"), \'2\')));\n' +
+      'setweight(to_tsvector(\'english\', "title"), \'A\')||' +
+      'setweight(to_tsvector(\'english\', "content"), \'B\')));\n' +
       'CREATE INDEX IF NOT EXISTS "articles_title_idx" ON "articles" ("title");\n' +
       'CREATE INDEX IF NOT EXISTS "articles_content_idx" ON "articles" ("content");\n'
     );

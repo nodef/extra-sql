@@ -44,7 +44,7 @@ export const OPERAND_COUNT: Map<string, number> = new Map([
 type ColumnTypes = {[key: string]: string};
 
 /** Weights for columns in a table (for a tsvector). */
-type ColumnWeights = {[key: string]: number};
+type ColumnWeights = {[key: string]: string};
 
 /** Data for a row in a table. */
 type RowData = {[key: string]: any};
