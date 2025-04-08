@@ -61,6 +61,7 @@ xsql.matchTsquery('columns', ['total', 'fat']);
 
 [![](https://img.youtube.com/vi/u6EuAUjq92k/maxresdefault.jpg)](https://www.youtube.com/watch?v=u6EuAUjq92k)<br>
 [![ORG](https://img.shields.io/badge/org-nodef-green?logo=Org)](https://nodef.github.io)
+![](https://ga-beacon.deno.dev/G-RC63DPBH3P:SH3Eq-NoQ9mwgYeHWxu7cw/github.com/nodef/extra-sql)
 
 
 [SQL]: https://en.wikipedia.org/wiki/SQL
